@@ -1,0 +1,130 @@
+#include "chacha20.h"
+
+
+ChaCha20::ChaCha20(){
+
+	for (int i = 0; i < 16; ++i)
+	{
+	  state[i] = 0;
+	}
+
+	// The constants from the ChaCha20 specification.
+	state[0] = 0x61707865;
+	state[1] = 0x3320646e;
+	state[2] = 0x79622d32;
+	state[3] = 0x6b206574;
+
+};
+
+void ChaCha20::keySetup(const uint32_t* key, const uint32_t* nonce, uint32_t* counter){
+
+	memcpy(&state[4], key, 32);  // Copy 32 bytes of key into the state
+	state[12] = *counter;  // Counter
+	memcpy(&state[13], nonce, 12);  // Copy 12 bytes of nonce into the state
+
+};
+
+void ChaCha20::quarterRound(int ai, int bi, int ci, int di){
+
+		uint32_t &a = state[ai], &b = state[bi], &c = state[ci], &d = state[di];
+
+		a += b; d ^= a; d = (d << 16) | (d >> (32 - 16));
+		c += d; b ^= c; b = (b << 12) | (b >> (32 - 12));
+		a += b; d ^= a; d = (d << 8) | (d >> (32 - 8));
+		c += d; b ^= c; b = (b << 7) | (b >> (32 - 7));
+};
+
+
+void ChaCha20::tenRoundsAndFinalAddition(){
+
+	uint32_t initial_state[16];
+
+	for(int i = 0 ; i<16 ; i++){
+		initial_state[i] = state[i];
+	}
+
+
+	for(int i = 0; i<10;i++){
+
+	quarterRound(0, 4, 8, 12);
+	quarterRound(1, 5, 9, 13);
+	quarterRound(2, 6, 10, 14);
+	quarterRound(3, 7, 11, 15);
+	quarterRound(0, 5, 10, 15);
+	quarterRound(1, 6, 11, 12);
+	quarterRound(2, 7, 8, 13);
+	quarterRound(3, 4, 9, 14);
+
+	}
+
+	for(int i = 0 ; i<16 ; i++){
+			state[i] += initial_state[i];
+		}
+
+};
+
+void ChaCha20::encrypt(uint8_t* plain_text,size_t len){
+
+	tenRoundsAndFinalAddition();
+
+	uint8_t keystream[64];
+
+	for (int i = 0; i < 16; i++){
+		for (int j = 0; j < 4; ++j) {
+		            keystream[i*4 + j] = (state[i] >> (8 * j)) & 0xff;
+		        }
+	}
+//buraya kadar doðru keystream çýkartýyor. birden fazla round varsa ona göre düzenlenmesi lazým. zortlatmasýn dikkat
+	for (size_t i = 0; i < len; ++i) {
+	        plain_text[i] ^= keystream[i];
+	    }
+
+};
+
+void ChaCha20::decrypt(uint8_t* cypher_text, size_t len){
+
+
+};
+
+
+uint32_t ChaCha20::bigEndianToLittleEndian(uint32_t bigEndianValue) {
+
+		uint32_t byte0 = (bigEndianValue & 0x000000ff) << 24;
+	    uint32_t byte1 = (bigEndianValue & 0x0000ff00) << 8;
+	    uint32_t byte2 = (bigEndianValue & 0x00ff0000) >> 8;
+	    uint32_t byte3 = (bigEndianValue & 0xff000000) >> 24;
+
+	    return byte0 | byte1 | byte2 | byte3;
+
+}
+
+uint32_t ChaCha20::littleEndianToBigEndian(uint32_t littleEndianValue){
+
+		uint32_t byte0 = (littleEndianValue & 0xff000000) >> 24;
+	    uint32_t byte1 = (littleEndianValue & 0x00ff0000) >> 8;
+	    uint32_t byte2 = (littleEndianValue & 0x0000ff00) << 8;
+	    uint32_t byte3 = (littleEndianValue & 0x000000ff) << 24;
+
+	    return byte0 | byte1 | byte2 | byte3;
+
+}
+
+void ChaCha20::convertSentenceToBytes(const std::string &sentence, uint8_t *bytes, int &numBytes){
+
+	 	numBytes = 0;
+	    for (char c : sentence) {
+	        bytes[numBytes++] = static_cast<uint8_t>(c);
+	    }
+
+}
+
+const char* ChaCha20::convertBytesToCharString(const uint8_t* bytes, int numBytes){
+
+		char8_t* str = new char8_t[numBytes + 1];  // Allocate memory for the string
+	    for (int i = 0; i < numBytes; ++i) {
+	        str[i] = static_cast<char8_t>(bytes[i]);
+	    }
+	    str[numBytes] = u'\0';  // Null-terminate the string
+	    return str;
+
+}

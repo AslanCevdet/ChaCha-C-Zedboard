@@ -1,0 +1,108 @@
+
+#include "chacha20.h"
+#include "xil_printf.h"
+
+
+
+
+int main(){
+
+	ChaCha20 ChaChaBlock;
+
+//	uint32_t a = 0x11111111;
+//	uint32_t b = 0x01020304;
+//	uint32_t c = 0x9b8d6f43;
+//	uint32_t d = 0x01234567;
+
+	ChaChaBlock.state[4] =ChaChaBlock.bigEndianToLittleEndian(0x00010203);
+	ChaChaBlock.state[5] = ChaChaBlock.bigEndianToLittleEndian(0x04050607);
+	ChaChaBlock.state[6] = ChaChaBlock.bigEndianToLittleEndian(0x08090a0b);
+	ChaChaBlock.state[7] = ChaChaBlock.bigEndianToLittleEndian (0x0c0d0e0f);
+	ChaChaBlock.state[8] = ChaChaBlock.bigEndianToLittleEndian(0x10111213);
+	ChaChaBlock.state[9] = ChaChaBlock.bigEndianToLittleEndian(0x14151617);
+	ChaChaBlock.state[10] = ChaChaBlock.bigEndianToLittleEndian(0x18191a1b);
+	ChaChaBlock.state[11] = ChaChaBlock.bigEndianToLittleEndian(0x1c1d1e1f);
+
+	ChaChaBlock.state[12] = 0x00000001;
+
+	ChaChaBlock.state[13] = ChaChaBlock.bigEndianToLittleEndian(0x00000000);
+	ChaChaBlock.state[14] = ChaChaBlock.bigEndianToLittleEndian(0x0000004a);
+	ChaChaBlock.state[15] = ChaChaBlock.bigEndianToLittleEndian(0x00000000);
+
+//		quarter round for one state is check
+//		ChaChaBlock.state[0] = 0x879531e0;
+//		ChaChaBlock.state[1] = 0xc5ecf37d;
+//		ChaChaBlock.state[2] = 0x516461b1;
+//		ChaChaBlock.state[3] = 0xc9a62f8a;
+//		ChaChaBlock.state[4] = 0x44c20ef3;
+//		ChaChaBlock.state[5] = 0x3390af7f;
+//		ChaChaBlock.state[6] = 0xd9fc690b;
+//		ChaChaBlock.state[7] = 0x2a5f714c;
+//		ChaChaBlock.state[8] = 0x53372767;
+//		ChaChaBlock.state[9] = 0xb00a5631;
+//		ChaChaBlock.state[10] = 0x974c541a;
+//		ChaChaBlock.state[11] = 0x359e9963;
+//
+//		ChaChaBlock.state[12] = 0x5c971061;
+//
+//		ChaChaBlock.state[13] = 0x3d631689;
+//		ChaChaBlock.state[14] = 0x2098d9d6;
+//		ChaChaBlock.state[15] = 0x91dbd320;
+//
+//		ChaChaBlock.quarterRound(2, 7, 8, 13);
+
+	//uint8_t* message= ChaChaBlock.convertCharToInt("Ladies and Gentlemen of the class of '99: If I could offer you o");
+
+	uint8_t bytes[64];
+	int numBytes;
+
+	ChaChaBlock.convertSentenceToBytes("Ladies and Gentlemen of the class of '99: If I could offer you o", bytes, numBytes);
+
+
+	ChaChaBlock.encrypt(bytes, numBytes);
+
+	xil_printf("Encrypted Text: \r\n");
+
+	for (int i = 0; i<numBytes; i++){
+
+		xil_printf("%02x", static_cast<int>(bytes[i]));
+		if(i<numBytes-1){
+			xil_printf(":");
+		}
+
+	}
+	xil_printf("\r\n");
+	xil_printf("\r\n");
+
+	ChaChaBlock.decrypt(bytes, numBytes);
+
+	xil_printf("Decrypted Text: \r\n");
+
+
+	for (int i = 0; i<numBytes; i++){
+
+			xil_printf("%02x", static_cast<int>(bytes[i]));
+			if(i<numBytes-1){
+				xil_printf(":");
+			}
+
+		}
+		xil_printf("\r\n");
+
+
+
+
+
+	return 0;
+
+
+}
+
+
+
+
+
+
+
+
+

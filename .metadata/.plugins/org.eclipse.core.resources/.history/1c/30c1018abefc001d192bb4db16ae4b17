@@ -1,0 +1,26 @@
+
+#include "stdint.h"
+#include "string.h"
+
+
+
+class ChaCha20{
+
+public:
+	ChaCha20();
+	void keySetup(const uint32_t* key,const uint32_t* nonce, uint32_t* counter);
+	void quarterRound(const uint32_t a, const uint32_t b, const uint32_t c, const uint32_t d);
+	void encrypt(uint8_t* plain_text, size_t len);
+	void decrypt(uint8_t* cypher_text, size_t len);
+
+
+private:
+
+	uint32_t state[16];
+
+
+};
+
+
+
+

@@ -1,0 +1,29 @@
+
+#include "stdint.h"
+#include "string.h"
+#include "algorithm"
+
+
+
+class ChaCha20{
+
+public:
+	ChaCha20();
+	void keySetup(const uint32_t* key,const uint32_t* nonce, uint32_t* counter);
+	void quarterRound(int ai, int bi, int ci, int di);
+	void encrypt(uint8_t* plain_text, size_t len);
+	void decrypt(uint8_t* cypher_text, size_t len);
+	void tenRoundsAndFinalAddition();
+	string bigEndianToLittleEndian(string hex);
+
+	uint32_t state[16];
+private:
+
+
+	uint32_t quarterRoundResult[4];
+
+};
+
+
+
+

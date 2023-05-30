@@ -1,0 +1,32 @@
+
+#include "stdint.h"
+#include "string.h"
+#include <cstddef>
+
+
+
+class ChaCha20{
+
+public:
+	ChaCha20();
+	void keySetup(const uint32_t* key,const uint32_t* nonce, uint32_t* counter);
+	void quarterRound(int ai, int bi, int ci, int di);
+	void encrypt(uint8_t* plain_text, size_t len);
+	void decrypt(uint8_t* cypher_text, size_t len);
+	void tenRoundsAndFinalAddition();
+	uint32_t bigEndianToLittleEndian(uint32_t bigEndianValue);
+	uint32_t littleEndianToBigEndian(uint32_t littleEndianValue);
+	uint8_t* convertCharToInt(const char* input);
+	void convertSentenceToBytes(const std::string& sentence, uint8_t *bytes, int &numBytes);
+	uint32_t state[16];
+
+private:
+
+
+
+
+};
+
+
+
+

@@ -1,0 +1,25 @@
+21:14:11 **** Incremental Build of configuration Debug for project chacha20-ps ****
+make all 
+make --no-print-directory pre-build
+a9-linaro-pre-build-step
+' '
+make --no-print-directory main-build
+'Building file: ../src/chacha20.cpp'
+'Invoking: ARM v7 g++ compiler'
+arm-none-eabi-g++ -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/chacha20.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -IC:/Users/pc/Desktop/VitisWs/ChaCha20_ps/chacha20_wrapper/export/chacha20_wrapper/sw/chacha20_wrapper/standalone_ps7_cortexa9_0/bspinclude/include -MMD -MP -MF"src/chacha20.d" -MT"src/chacha20.o" -o "src/chacha20.o" "../src/chacha20.cpp"
+'Finished building: ../src/chacha20.cpp'
+' '
+'Building target: chacha20-ps.elf'
+'Invoking: ARM v7 g++ linker'
+arm-none-eabi-g++ -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -LC:/Users/pc/Desktop/VitisWs/ChaCha20_ps/chacha20_wrapper/export/chacha20_wrapper/sw/chacha20_wrapper/standalone_ps7_cortexa9_0/bsplib/lib -o "chacha20-ps.elf"  ./src/chacha20.o ./src/main.o   -Wl,--start-group,-lxil,-lgcc,-lc,-lstdc++,--end-group
+'Finished building target: chacha20-ps.elf'
+' '
+'Invoking: ARM v7 Print Size'
+arm-none-eabi-size chacha20-ps.elf  |tee "chacha20-ps.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+ 552455	   2836	  29128	 584419	  8eae3	chacha20-ps.elf
+'Finished building: chacha20-ps.elf.size'
+' '
+
+21:14:12 Build Finished (took 770ms)
+
